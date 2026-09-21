@@ -1,0 +1,49 @@
+name: Changelogs & Package Releases
+description: Automated release pipeline for monorepo package versioning, changelog generation, PR preview comments, Git tagging, GitHub Releases, and package publishing to a configurable registry.
+
+inputs:
+  release-type:
+    description: Release strategy (`auto` | `major` | `minor` | `patch` | `beta` | `canary`). `auto` detects version bumps via conventional commits.
+    default: "auto"
+  pr-number:
+    description: Pull request number used for beta version metadata and the PR preview comment. Defaults to the number of the pull request that triggered the workflow — only pass this explicitly if the workflow runs on a non-pull_request event (e.g. workflow_dispatch).
+    default: ${{ github.event.pull_request.number }}
+  head-sha:
+    description: HEAD commit SHA used for beta and canary version metadata. Defaults to the head commit SHA of the pull request that triggered the workflow — only pass this explicitly if the workflow runs on a non-pull_request event.
+    default: ${{ github.event.pull_request.head.sha }}
+
+  commit-and-push:
+    description: Whether to commit version bumps and changelogs, create Git tags, and push changes to remote.
+    default: "true"
+  create-release:
+    description: Whether to create GitHub Releases with extracted changelog release notes.
+    default: "true"
+  commit-message:
+    description: Commit message template for release version bumps and changelog updates.
+    default: "chore(release): publish package versions and changelogs [skip ci]"
+
+  github-token:
+    description: GitHub token or GitHub App token for API operations (commits, tags, releases, PR comments). If empty, default token is used.
+    default: ${{ github.token }}
+
+  publish-packages:
+    description: Whether to publish updated packages to the package registry.
+    default: "true"
+  package-manager:
+    description: Package manager CLI used to publish packages (`pnpm` | `npm` | `yarn`).
+    default: "npm"
+  package-access:
+    description: Package visibility access level (`public` | `restricted`).
+    default: "public"
+  publish-package-tag:
+    description: Custom distribution tag (`dist-tag`) for publishing (e.g. `latest`, `beta`, `canary`). If empty, defaults to `latest` for stable releases, `beta` for beta releases, and `canary` for canary releases.
+  publish-extra-args:
+    description: Custom arguments to append to the publish command (e.g. `--registry https://...`, `--dry-run`).
+
+outputs:
+  packages:
+    description: JSON array of packages whose version was bumped in this run (unchanged packages are excluded). Each entry contains the package's directory path in `dir`.
+
+runs:
+  using: "node24"
+  main: "dist/index.cjs"

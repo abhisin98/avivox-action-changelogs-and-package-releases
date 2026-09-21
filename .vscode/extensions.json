@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "github.vscode-github-actions",
+        "firsttris.vscode-jest-runner",
+        "esbenp.prettier-vscode"
+    ]
+}

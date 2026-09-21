@@ -1,0 +1,10 @@
+{
+  "extends": "@avivox/typescript-config/node.json",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "types": ["node", "jest"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
